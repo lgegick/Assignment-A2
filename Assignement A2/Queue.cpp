@@ -40,23 +40,14 @@ int Queue::enqueue(char* userInput)
 	{
 		return -1; //error code for failure
 	}
-	else if (front == 1) //insert the first element in the array
+	else if (isEmpty()) // if empty, offset the array
 	{
+		front++;
+	}
 
-		front = 0; 
-		rear = 0;
-		queueFrame[rear].payLoad = userInput;
-	}
-	else if (rear == size - 1 && front != 0) //if towards the end of the array
-	{
-		rear = 0;
-		queueFrame[rear].payLoad = userInput;
-	}
-	else
-	{
-		rear++;
-		queueFrame[rear].payLoad = userInput;
-	}
+	//increase the rear. ensuring it doesnt go above the total size
+	rear = (rear + 1) % size;
+	queueFrame[rear].payLoad = userInput;
 }
 
 /*
@@ -66,7 +57,7 @@ int Queue::enqueue(char* userInput)
 */
 int Queue::dequeue(char* queueOutput)
 {
-	if (isEmpty())
+	if (isEmpty()) //return an error code since no more values to dequeue
 	{
 		return -1;
 	}
@@ -74,18 +65,19 @@ int Queue::dequeue(char* queueOutput)
 	//initialze the data to send back
 	queueOutput = queueFrame[rear].payLoad;
 
-	if (front = rear) //if they are indexing the same value (ie. empty queue)
+	if (front == rear) //exactly one element in the array
 	{
+
+		//process the retrun payload
+
 		front = -1;
 		rear = -1;
 	}
-	else if (front == size - 1)
+	else 
 	{
-		front = 0;
-	}
-	else
-	{
-		front++;
+		//process the return payload amount 
+
+		front = (front + 1) % size;
 	}
 
 	return 0;
@@ -116,7 +108,7 @@ void Queue::displayQueue()
 */
 bool Queue::isEmpty()
 {
-	if (front == -1 && rear == -1)
+	if (front == -1) //front is set to -1 meaning no values
 		return true;
 	else
 		return false;
@@ -128,7 +120,7 @@ bool Queue::isEmpty()
 */
 bool Queue::isFull()
 {
-	if (front + 1 == size - 1)
+	if ((rear + 1) % size == front) //queue has fully wrapped around the circle
 		return true;
 	else
 		return false;
