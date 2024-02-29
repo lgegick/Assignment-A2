@@ -11,7 +11,7 @@
 
 struct Frame
 {
-	char* payLoad;
+	char* payload;
 };
 
 class Queue
@@ -60,19 +60,19 @@ class Queue
 		/*
 			Display the contents of the Queue, show each payload beginning at the first most index
 		*/
-		void displayQueue();
+		void displayQueue() const;
 
 		/*
 			check if any values exist within the Queue
 			@return true if the Queue is empty, false otherwise
 		*/
-		bool isEmpty();
+		bool isEmpty() const;
 
 		/*
 			check if the Queue is full and cannot take any more values
 			@return true if the Queue is full, false otherwise
 		*/
-		bool isFull();
+		bool isFull() const;
 
 		/*
 			Process user input, convert the buffer into six char long payloads, until the buffer overflows
@@ -80,6 +80,14 @@ class Queue
 			@return char*, the processed user inputs
 		*/
 		char* processInput(const char* userInput);
+
+		/*
+			copy the contents from one char* to another char*
+			@param[in] char1, char* is the operand on the left
+			@param[in] char2, char* is the operand on the right
+			@param[in] size, the size of the array (assumed to be six for a Frame)
+		*/
+		void copy(char* char1, char* char2,	const int size);
 };
 
 #endif

@@ -47,7 +47,12 @@ int Queue::enqueue(char* userInput)
 
 	//increase the rear. ensuring it doesnt go above the total size
 	rear = (rear + 1) % size;
-	queueFrame[rear].payLoad = userInput;
+
+	//initialize the payload struct
+	queueFrame[rear].payload = new char[7];
+	queueFrame[rear].payload = userInput;
+
+	return 0;
 }
 
 /*
@@ -57,36 +62,32 @@ int Queue::enqueue(char* userInput)
 */
 int Queue::dequeue(char* queueOutput)
 {
+	
 	if (isEmpty()) //return an error code since no more values to dequeue
 	{
 		return -1;
 	}
 
-	//initialze the data to send back
-	queueOutput = queueFrame[rear].payLoad;
+	//copy the payload to the queueOutput
+	copy(queueOutput, queueFrame[rear].payload, 7);
 
-	if (front == rear) //exactly one element in the array
+	if (front == rear) //exactly one element in the array ex. front = rear = 0
 	{
-
-		//process the retrun payload
-
 		front = -1;
 		rear = -1;
 	}
-	else 
+	else //move front one forward one index
 	{
-		//process the return payload amount 
-
 		front = (front + 1) % size;
 	}
-
+	
 	return 0;
 }
 
 /*
 	Display the contents of the Queue, show each payload beginning at the first most index
 */
-void Queue::displayQueue()
+void Queue::displayQueue() const
 {
 	if (!isEmpty())
 	{
@@ -102,8 +103,9 @@ void Queue::displayQueue()
 		for (int i = front; i <= rear; i++)
 		{
 			std::cout << "      " << i << std::setw(14) << std::setfill(' ') << '|' <<
-			std::setw(13) << std::setfill(' ') << queueFrame[i].payLoad << '\n';
+			std::setw(13) << std::setfill(' ') << queueFrame[i].payload << '\n';
 		}
+		std::cout << '\n';
 	}
 	else
 	{
@@ -115,7 +117,7 @@ void Queue::displayQueue()
 	check if any values exist within the Queue
 	@return true if the Queue is empty, false otherwise
 */
-bool Queue::isEmpty()
+bool Queue::isEmpty() const
 {
 	if (front == -1) //front is set to -1 meaning no values
 		return true;
@@ -127,10 +129,33 @@ bool Queue::isEmpty()
 	check if the Queue is full and cannot take any more values
 	@return true if the Queue is full, false otherwise
 */
-bool Queue::isFull()
+bool Queue::isFull() const
 {
 	if ((rear + 1) % size == front) //queue has fully wrapped around the circle
 		return true;
 	else
 		return false;
+}
+
+/*
+	Process user input, convert the buffer into six char long payloads, until the buffer overflows
+	@param[in] userInput, the char input from the user
+	@return char*, the processed user inputs
+*/
+char* Queue::processInput(const char* userInput)
+{
+	char* testRtn = new char[6];
+	return  testRtn;
+}
+
+/*
+	copy the contents from one char* to another char*
+	@param[in, out] char1, char* is the operand on the left
+	@param[in, out] char2, char* is the operand on the right'
+	@param[in] size, the size of the array (assumed to be six for a Frame)
+*/
+void Queue::copy(char* char1, char* char2, const int size)
+{
+	for (int i = 0; i < size; ++i)
+		char1[i] = char2[i];
 }
