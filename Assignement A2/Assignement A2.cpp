@@ -5,6 +5,7 @@
 */
 
 #include <iostream>
+#include <string>
 
 /*
 	check for overflow from the userBuffer using the cin buffer
@@ -18,19 +19,34 @@ bool checkBufferOverflow();
 */
 void initializeBuffer(char* userInput, const int size);
 
+/*
+	clears the user input buffer
+	@param[in, out] userInput, the char buffer for the users inputs
+	@param[in] size, the size of the buffer
+*/
+void clearBuffer(char* userInput, const int size);
+
+/*
+	reads and input and automatically clears the buffer
+	@param[in,out] userInput, the char buffer of the users inputs
+	@param[in] size, the size of the buffer for the users
+	@param[in] prompt, the question you want to ask the user
+	@return int, code for failure (-1), code for success (0)
+*/
+int promptUser(char* userInput, const int size, const std::string& prompt);
+
 int main()
 {
 	const int bufferSize = 256;
 
 	//buffer for user inputs to go into, holds 256 char values
 	char userInput[bufferSize];
-
-	initializeBuffer(userInput, bufferSize);
 	
-	std::cout << "Enter some values\n";
-	std::cin.getline(userInput, bufferSize);
-	if (checkBufferOverflow() == true)
-		std::cout << "Overflow works\n";
+	std::string prompt = "Enter some values to enqueue\n";
+	
+	promptUser(userInput, bufferSize, prompt);
+
+	//a function in the Queue class to handle user inputs and add them to the queue
 
 	//beginning of the UI, possibly GUI if I have the time
 
@@ -61,5 +77,41 @@ void initializeBuffer(char* userInput, const int size)
 	for (int i = 0; i < size; ++i)
 	{
 		userInput[i] = '~';
+	}
+}
+
+/*
+	clears the user input buffer
+	@param[in, out] userInput, the char buffer for the users inputs
+	@param[in] size, the size of the buffer
+*/
+void clearBuffer(char* userInput, const int size)
+{
+	initializeBuffer(userInput, size);
+}
+
+/*
+	reads and input and automatically clears the buffer
+	@param[in,out] userInput, the char buffer of the users inputs
+	@param[in] size, the size of the buffer for the users
+	@param[in] prompt, the question you want to ask the user
+	@return int, code for failure (-1), code for success (0)
+*/
+int promptUser(char* userInput, const int size, const std::string& prompt)
+{
+	//set up the buffer to handle inputs
+	initializeBuffer(userInput, size);
+
+	//prompt the user with the string prompt
+	std::cout << prompt;
+
+	//process the users inputs
+	std::cin.getline(userInput, size);
+
+	//check the buffer doesnt overflow
+	if (checkBufferOverflow() == true)
+	{
+		std::cout << "Non-fatal Overflow Err: user input is too long, try shortening your input\n";
+		return (-1);
 	}
 }

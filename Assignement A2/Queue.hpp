@@ -12,7 +12,6 @@
 struct Frame
 {
 	char* payLoad;
-	Frame* next;
 };
 
 class Queue
@@ -74,6 +73,13 @@ class Queue
 			@return true if the Queue is full, false otherwise
 		*/
 		bool isFull();
+
+		/*
+			Process user input, convert the buffer into six char long payloads, until the buffer overflows
+			@param[in] userInput, the char input from the user
+			@return char*, the processed user inputs
+		*/
+		char* processInput(const char* userInput);
 };
 
 #endif

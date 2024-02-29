@@ -5,6 +5,8 @@
 */
 
 #include "Queue.hpp"
+#include <iostream>
+#include <iomanip>
 
 /*
 	Constructor for Queue
@@ -20,11 +22,11 @@ Queue::Queue(int size)
 
 /*
 	Destructor for Queue
-	Removes all new declarations of the Frame from memory
+	Removes the new initialized queueFrame array from memory
 */
 Queue::~Queue()
 {
-
+	delete[] queueFrame;
 }
 
 /*
@@ -43,9 +45,18 @@ int Queue::enqueue(char* userInput)
 
 		front = 0; 
 		rear = 0;
-
+		queueFrame[rear].payLoad = userInput;
 	}
-
+	else if (rear == size - 1 && front != 0) //if towards the end of the array
+	{
+		rear = 0;
+		queueFrame[rear].payLoad = userInput;
+	}
+	else
+	{
+		rear++;
+		queueFrame[rear].payLoad = userInput;
+	}
 }
 
 /*
@@ -59,10 +70,25 @@ int Queue::dequeue(char* queueOutput)
 	{
 		return -1;
 	}
+
+	//initialze the data to send back
+	queueOutput = queueFrame[rear].payLoad;
+
+	if (front = rear) //if they are indexing the same value (ie. empty queue)
+	{
+		front = -1;
+		rear = -1;
+	}
+	else if (front == size - 1)
+	{
+		front = 0;
+	}
 	else
 	{
-
+		front++;
 	}
+
+	return 0;
 }
 
 /*
@@ -70,7 +96,18 @@ int Queue::dequeue(char* queueOutput)
 */
 void Queue::displayQueue()
 {
-
+	if (!isEmpty())
+	{
+		std::cout << "The contents of the Queue include:\n";
+		for (int i = 0; i < size; i++)
+		{
+			std::cout << "Index" << std::setw(10) << std::left << "Payload" << '\n';
+		}
+	}
+	else
+	{
+		std::cout << "The queue is currently empty...\n";
+	}
 }
 
 /*
@@ -79,7 +116,7 @@ void Queue::displayQueue()
 */
 bool Queue::isEmpty()
 {
-	if (head == nullptr)
+	if (front == -1 && rear == -1)
 		return true;
 	else
 		return false;
