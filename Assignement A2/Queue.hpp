@@ -29,7 +29,7 @@ class Queue
 		int size;
 
 		// points to the front most Frame
-		Frame* head;
+		Frame* queueFrame;
 
 	public:
 		/*

@@ -15,7 +15,7 @@ Queue::Queue(int size)
 	this->size = size;
 	rear = -1;
 	front = -1;
-	head = nullptr;
+	queueFrame = new Frame[size];
 }
 
 /*
@@ -55,7 +55,14 @@ int Queue::enqueue(char* userInput)
 */
 int Queue::dequeue(char* queueOutput)
 {
+	if (isEmpty())
+	{
+		return -1;
+	}
+	else
+	{
 
+	}
 }
 
 /*
