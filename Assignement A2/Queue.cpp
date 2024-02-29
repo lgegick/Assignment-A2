@@ -90,10 +90,19 @@ void Queue::displayQueue()
 {
 	if (!isEmpty())
 	{
-		std::cout << "The contents of the Queue include:\n";
-		for (int i = 0; i < size; i++)
+		//header for the table
+		std::cout << "The contents of the Queue include:\n\n";
+		std::cout << "___________________________________________\n";
+
+		//show the table legend with regard to the index and its payload
+		std::cout << "    " << "Index" << std::setw(12) << std::setfill(' ') << '|' <<
+		std::setw(16) << std::setfill(' ') << "Payload" << '\n';
+		std::cout << "___________________________________________\n";
+
+		for (int i = front; i <= rear; i++)
 		{
-			std::cout << "Index" << std::setw(10) << std::left << "Payload" << '\n';
+			std::cout << "      " << i << std::setw(14) << std::setfill(' ') << '|' <<
+			std::setw(13) << std::setfill(' ') << queueFrame[i].payLoad << '\n';
 		}
 	}
 	else

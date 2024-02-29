@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <string>
+#include "Queue.hpp"
 
 /*
 	check for overflow from the userBuffer using the cin buffer
@@ -47,6 +48,10 @@ int main()
 	promptUser(userInput, bufferSize, prompt);
 
 	//a function in the Queue class to handle user inputs and add them to the queue
+
+	Queue userQueue(5);
+	userQueue.enqueue(userInput);
+	userQueue.displayQueue();
 
 	//beginning of the UI, possibly GUI if I have the time
 
