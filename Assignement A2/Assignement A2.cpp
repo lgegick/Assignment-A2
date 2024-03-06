@@ -12,24 +12,24 @@
 int main()
 {
 	// handle user inputs using a char buffer
-	const int BUFFERSIZE = 256;
-	char userInput[BUFFERSIZE];
+	const int BUFFERSIZE = 6;
+	Buffer::Buffer userInput(BUFFERSIZE);
 	
 	std::string prompt = "Enter some values to enqueue\n";
 	
-	Buffer::promptUser(userInput, BUFFERSIZE, prompt);
+	userInput.promptUser(prompt);
 
 	// a function in the Queue class to handle user inputs and add them to the queue
 
 	Queue userQueue(6);
-	userQueue.enqueue(userInput);
+	userQueue.enqueue(userInput.getUserInput());
 	userQueue.displayQueue();
 
 	char* test = new char[7];
 	int temp = userQueue.dequeue(test);
 	std::cout << test;
 
-	// beginning of the UI, possibly GUI if I have the time
+	// beginning of the UI
 
 	delete[] test;
 

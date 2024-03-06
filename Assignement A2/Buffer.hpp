@@ -11,33 +11,56 @@
 
 namespace Buffer
 {
-	/*
-		check for overflow from the userBuffer using the cin buffer
-	*/
-	bool checkBufferOverflow();
+	class Buffer
+	{
+		private:
 
-	/*
-		Initialize all of the array elements to 0, this helps in checking for overflow
-		@param[in, out] userInput, user input for strings
-		@param[in] size, the size of the buffer
-	*/
-	void initializeBuffer(char* userInput, const int size);
+			// the buffer for the user input
+			char* userInput;
 
-	/*
-		clears the user input buffer
-		@param[in, out] userInput, the char buffer for the users inputs
-		@param[in] size, the size of the buffer
-	*/
-	void clearBuffer(char* userInput, const int size);
+			// the size of the buffer
+			int BUFFERSIZE;
 
-	/*
-		reads and input and automatically clears the buffer
-		@param[in,out] userInput, the char buffer of the users inputs
-		@param[in] size, the size of the buffer for the users
-		@param[in] prompt, the question you want to ask the user
-		@return int, code for failure (-1), code for success (0)
-	*/
-	int promptUser(char* userInput, const int size, const std::string& prompt);
+		public:
+
+			/*
+				Constructor for the user buffer
+				@param[in] size, the size of the input buffer
+			*/
+			Buffer(int size);
+
+			/*
+				Destructor for the user buffer
+			*/
+			~Buffer();
+
+			/*
+				return the userInput
+			*/
+			char* getUserInput();
+
+			/*
+				check for overflow from the userBuffer using the cin buffer
+			*/
+			bool checkBufferOverflow();
+
+			/*
+				Initialize all of the array elements to 0, this helps in checking for overflow
+			*/
+			void initializeBuffer();
+
+			/*
+				clears the user input buffer
+			*/
+			void clearBuffer();
+
+			/*
+				reads and input and automatically clears the buffer
+				@param[in] prompt, the question you want to ask the user
+				@return int, code for failure (-1), code for success (0)
+			*/
+			int promptUser(const std::string& prompt);
+	};
 }
 
 #endif

@@ -43,6 +43,7 @@ class Queue
 		*/
 		~Queue();
 
+
 		/*
 			Enqueue the next value into the Queue
 			@param[in] userInput, char buffer with user input
