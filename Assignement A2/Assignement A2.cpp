@@ -12,8 +12,9 @@
 int main()
 {
 	// handle user inputs using a char buffer
-	const int BUFFERSIZE = 6;
+	const int BUFFERSIZE = 7;
 	Buffer::Buffer userInput(BUFFERSIZE);
+	Queue userQueue(BUFFERSIZE);
 	
 	std::string prompt = "Enter some values to enqueue\n";
 	
@@ -21,17 +22,16 @@ int main()
 
 	// a function in the Queue class to handle user inputs and add them to the queue
 
-	Queue userQueue(6);
 	userQueue.enqueue(userInput.getUserInput());
 	userQueue.displayQueue();
 
 	char* test = new char[7];
 	int temp = userQueue.dequeue(test);
-	std::cout << test;
+	std::cout << test; 
 
 	// beginning of the UI
 
-	delete[] test;
+	delete[] test; 
 
 	return 0;
 }

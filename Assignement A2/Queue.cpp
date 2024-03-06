@@ -144,7 +144,7 @@ bool Queue::isFull() const
 */
 char* Queue::processInput(const char* userInput)
 {
-	char* testRtn = new char[6];
+	char* testRtn = new char[7];
 	return  testRtn;
 }
 
