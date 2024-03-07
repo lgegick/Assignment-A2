@@ -45,6 +45,8 @@ int Queue::enqueue(char* userInput)
 		front++;
 	}
 
+	// pad the userInput if it is not 6 characters
+
 	//increase the rear. ensuring it doesnt go above the total size
 	rear = (rear + 1) % size;
 
