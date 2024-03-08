@@ -117,7 +117,12 @@ int main()
 		}
 		else if (userOption == "Head" || userOption == "head")
 		{
-
+			std::cout << CLEAROUTPUT;
+			displayHead(userQueue, BUFFERSIZE);
+			std::cout << "When you are done viewing, enter any value to continue...\n";
+			std::cin.clear(); //clear input stream
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			getline(std::cin, userOption);
 		}
 
 		//once user finishes an above function, or enters function incorrectly

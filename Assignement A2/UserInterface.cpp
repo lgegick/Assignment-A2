@@ -6,11 +6,15 @@
 
 #include "UserInterface.hpp"
 #include <iostream>
+#include <iomanip>
 #include <limits>
 
 const std::string CLEAROUTPUT = "\033[2J\033[1; 1H";
 
 using std::cout;
+using std::setw;
+using std::left;
+using std::setfill;
 
 std::string displayUserOptions()
 {
@@ -29,5 +33,14 @@ std::string displayUserOptions()
 	std::cin >> userOption;
 
 	return userOption;
+}
+
+void displayHead(const Queue& userQueue, int size)
+{
+	std::cout << "|" << setw(10) << setfill(' ') << "|" << setw(10) << setfill(' ') << "|";
+	for (int i = 0; i < size; ++i)
+	{
+		std::cout << "|" << setw(10) << setfill(' ') << "|";
+	}
 }
 

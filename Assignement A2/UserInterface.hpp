@@ -8,7 +8,10 @@
 #define INCLUDED_USERINTERFACE_HPP
 
 #include <string>
+#include "Queue.hpp"
 
 std::string displayUserOptions();
+
+void displayHead(const Queue& userQueue, int size);
 
 #endif
