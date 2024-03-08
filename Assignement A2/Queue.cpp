@@ -38,21 +38,24 @@ int Queue::enqueue(char* userInput)
 {
 	if (isFull())
 	{
-		return -1; //error code for failure
+		return -1; // error code for failure
 	}
 	else if (isEmpty()) // if empty, offset the array
 	{
 		front++;
 	}
 
+	char* enqueueInput = new char[7];
+	copy(enqueueInput, userInput, 7);
 	// pad the userInput if it is not 6 characters
+	processInput(enqueueInput, 7);
 
-	//increase the rear. ensuring it doesnt go above the total size
+	// increase the rear. ensuring it doesnt go above the total size
 	rear = (rear + 1) % size;
 
-	//initialize the payload struct
+	// initialize the payload struct
 	queueFrame[rear].payload = new char[7];
-	queueFrame[rear].payload = userInput;
+	queueFrame[rear].payload = enqueueInput;
 
 	return 0;
 }
@@ -71,7 +74,7 @@ int Queue::dequeue(char* queueOutput)
 	}
 
 	//copy the payload to the queueOutput
-	copy(queueOutput, queueFrame[rear].payload, 7);
+	copy(queueOutput, queueFrame[front].payload, 7);
 
 	if (front == rear) //exactly one element in the array ex. front = rear = 0
 	{
@@ -93,21 +96,49 @@ void Queue::displayQueue() const
 {
 	if (!isEmpty())
 	{
-		//header for the table
-		std::cout << "The contents of the Queue include:\n\n";
-		std::cout << "___________________________________________\n";
-
-		//show the table legend with regard to the index and its payload
-		std::cout << "    " << "Index" << std::setw(12) << std::setfill(' ') << '|' <<
-		std::setw(16) << std::setfill(' ') << "Payload" << '\n';
-		std::cout << "___________________________________________\n";
-
-		for (int i = front; i <= rear; i++)
+		if (rear >= front)
 		{
-			std::cout << "      " << i << std::setw(14) << std::setfill(' ') << '|' <<
-			std::setw(13) << std::setfill(' ') << queueFrame[i].payload << '\n';
+			//header for the table
+			std::cout << "The contents of the Queue include:\n\n";
+			std::cout << "___________________________________________\n";
+
+			//show the table legend with regard to the index and its payload
+			std::cout << "    " << "Index" << std::setw(12) << std::setfill(' ') << '|' <<
+				std::setw(16) << std::setfill(' ') << "Payload" << '\n';
+			std::cout << "___________________________________________\n";
+
+			for (int i = front; i <= rear; ++i)
+			{
+				std::cout << "      " << i << std::setw(14) << std::setfill(' ') << '|' <<
+					std::setw(13) << std::setfill(' ') << queueFrame[i].payload << '\n';
+			}
+			std::cout << '\n';
 		}
-		std::cout << '\n';
+		else
+		{
+			//header for the table
+			std::cout << "The contents of the Queue include:\n\n";
+			std::cout << "___________________________________________\n";
+
+			//show the table legend with regard to the index and its payload
+			std::cout << "    " << "Index" << std::setw(12) << std::setfill(' ') << '|' <<
+				std::setw(16) << std::setfill(' ') << "Payload" << '\n';
+			std::cout << "___________________________________________\n";
+
+			for (int i = front; i < size; ++i)
+			{
+				std::cout << "      " << i << std::setw(14) << std::setfill(' ') << '|' <<
+					std::setw(13) << std::setfill(' ') << queueFrame[i].payload << '\n';
+			}
+
+			for (int i = 0; i <= rear; ++i)
+			{
+				std::cout << "      " << i << std::setw(14) << std::setfill(' ') << '|' <<
+					std::setw(13) << std::setfill(' ') << queueFrame[i].payload << '\n';
+			}
+
+			std::cout << '\n';
+		}
 	}
 	else
 	{
@@ -142,11 +173,24 @@ bool Queue::isFull() const
 /*
 	Process user input, convert the buffer into six char long payloads, until the buffer overflows
 	@param[in] userInput, the char input from the user
+	@param[in] size, the max size of the userInput
 	@return char*, the processed user inputs
 */
-char* Queue::processInput(const char* userInput)
+char* Queue::processInput(const char* userInput, int size)
 {
-	char* testRtn = new char[7];
+	char* testRtn = new char[size];
+	
+	for (int i = 0; i < size; i++)
+	{
+		if (userInput[i] != 0) // if a value is initialized
+		{
+			testRtn[i] = userInput[i];
+		}
+		else
+		{
+			testRtn[i] = ' ';
+		}
+	}
 	return  testRtn;
 }
 
@@ -160,4 +204,20 @@ void Queue::copy(char* char1, char* char2, const int size)
 {
 	for (int i = 0; i < size; ++i)
 		char1[i] = char2[i];
+}
+
+/*
+	Check the size is 6 or less
+	@param[in] userinput, char* of the user input into the Queue
+	@return true if the input is within the limit
+*/
+bool Queue::verifySize(const char* userInput)
+{
+	int size(0);
+	for (int i = 0; i < 7; ++i)
+	{
+		if (userInput[i] != 0)
+			++size;
+	}
+	return size < 7;
 }

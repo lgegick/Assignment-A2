@@ -23,13 +23,14 @@ int main()
 
 	/*char* test = new char[7];
 	int temp = userQueue.dequeue(test);
-	std::cout << test; 
+	std::cout << test;
 	*/
 
 	// beginning of the UI
 	std::string userOption;
 	std::string prompt;
-	while (userOption != "quit" || userOption != "Quit")
+
+	while (userOption != "quit" && userOption != "Quit")
 	{
 		// display the UI 
 		userOption = displayUserOptions();
@@ -40,28 +41,83 @@ int main()
 
 			while (enqueueAgain == 'y' || enqueueAgain == 'Y')
 			{
+				bool flag = true;
 				std::cout << CLEAROUTPUT;
-				prompt = "Enter up to 6 characters to Enqueue: ";
-				std::cin.clear(); //clear input stream
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-				userInput.promptUser(prompt);
+
+				// check the user input is within range and valid
+				do
+				{
+					prompt = "Enter up to 6 characters to Enqueue: ";
+					std::cin.clear(); //clear input stream
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+					int status = userInput.promptUser(prompt);
+
+					if (status != -1 && userQueue.verifySize(userInput.getUserInput()))
+					{
+						flag = false;
+					}
+					else
+					{
+						if (status == -1)
+						{
+							std::cerr << "Non-fatal Err: Buffer processing error\n";
+						}
+						else
+						{
+							std::cerr << "Non-fatal Err: input is to long (try shortening your input)\n\n\n";
+						}
+					}
+
+				} while (flag);
 
 				//move the buffer into the Queue
-				userQueue.enqueue(userInput.getUserInput());
+				int status = userQueue.enqueue(userInput.getUserInput());
+				if (status == -1)
+				{
+					std::cerr << "Non-fatal Err: Invalid user input\n";
+					break;
+				}
 				userQueue.displayQueue();
 
 				std::cout << "Would you like to Enqueue another value? (Y/N): ";
 				std::cin >> enqueueAgain;
 				std::cout << CLEAROUTPUT;
 			}
-
-			std::cout << "Enter any value to continue...";
-			std::cin >> prompt;
-			std::cout << CLEAROUTPUT;
 		}
-		
+		else if (userOption == "Dequeue" || userOption == "dequeue")
+		{
+			char dequeueAgain = 'Y';
+			while (dequeueAgain == 'Y' || dequeueAgain == 'y')
+			{
+				std::cout << CLEAROUTPUT;
+				char* dequeueOutput = new char[7];
+				int status = userQueue.dequeue(dequeueOutput);
+				if (status == -1)
+				{
+					std::cerr << "Non-fatal Err: dequeue did not function as intended, try again\n";
+					break;
+				}
+				
+				// if the dequeue works as intended, output the value and show the updated table
+				std::cout << "Dequeued value: " << dequeueOutput << "\n\n";
+				userQueue.displayQueue();
+
+				// check if user wants to dequeue again
+				std::cout << "Would you like to Dequeue another value? (Y/N): ";
+				std::cin >> dequeueAgain;
+				std::cout << CLEAROUTPUT;
+
+				// deallocate the new char made to show output
+				delete[] dequeueOutput;
+			}
+		}
+
+		//once user finishes an above function, or enters function incorrectly
+		std::cout << CLEAROUTPUT;
+		std::cout << "Enter 'quit' to exit program, and 'enter' to continue: ";
+		std::cin >> userOption;
+		std::cout << CLEAROUTPUT;
 	}
-	
 	//delete[] test; 
 
 	return 0;

@@ -78,9 +78,10 @@ class Queue
 		/*
 			Process user input, convert the buffer into six char long payloads, until the buffer overflows
 			@param[in] userInput, the char input from the user
+			@param[in] size, the max size of the userInput
 			@return char*, the processed user inputs
 		*/
-		char* processInput(const char* userInput);
+		char* processInput(const char* userInput, int size);
 
 		/*
 			copy the contents from one char* to another char*
@@ -89,6 +90,14 @@ class Queue
 			@param[in] size, the size of the array (assumed to be six for a Frame)
 		*/
 		void copy(char* char1, char* char2,	const int size);
+
+		/*
+			Check the size is 6 or less
+			@param[in] userinput, char* of the user input into the Queue
+			@return true if the input is within the limit
+		*/
+		bool verifySize(const char* userInput);
+
 };
 
 #endif
