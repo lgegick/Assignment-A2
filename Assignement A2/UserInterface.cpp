@@ -37,10 +37,11 @@ std::string displayUserOptions()
 
 void displayHead(const Queue& userQueue, int size)
 {
+	//show the labels of the graph
+	std::cout << setw(10) << setfill(' ') << "Address" << setw(10) << setfill(' ') << '\n';
+
+	std::cout << setw(35) << setfill('_') << '\n';
 	std::cout << "|" << setw(10) << setfill(' ') << "|" << setw(10) << setfill(' ') << "|";
-	for (int i = 0; i < size; ++i)
-	{
-		std::cout << "|" << setw(10) << setfill(' ') << "|";
-	}
+	
 }
 
