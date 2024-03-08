@@ -21,11 +21,6 @@ int main()
 	Buffer::Buffer userInput(BUFFERSIZE);
 	Queue userQueue(BUFFERSIZE);
 
-	/*char* test = new char[7];
-	int temp = userQueue.dequeue(test);
-	std::cout << test;
-	*/
-
 	// beginning of the UI
 	std::string userOption;
 	std::string prompt;
@@ -111,6 +106,19 @@ int main()
 				delete[] dequeueOutput;
 			}
 		}
+		else if (userOption == "Display" || userOption == "display")
+		{
+			std::cout << CLEAROUTPUT;
+			userQueue.displayQueue();
+			std::cout << "When you are done viewing, enter any value to continue...\n";
+			std::cin.clear(); //clear input stream
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			getline(std::cin, userOption);
+		}
+		else if (userOption == "Head" || userOption == "head")
+		{
+
+		}
 
 		//once user finishes an above function, or enters function incorrectly
 		std::cout << CLEAROUTPUT;
@@ -118,7 +126,7 @@ int main()
 		std::cin >> userOption;
 		std::cout << CLEAROUTPUT;
 	}
-	//delete[] test; 
+	
 
 	return 0;
 }
