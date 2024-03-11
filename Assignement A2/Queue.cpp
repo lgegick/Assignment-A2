@@ -142,6 +142,23 @@ int Queue::dequeue(char* userOutput)
 */
 void Queue::displayQueue() const
 {
+	bool errorFound = false;
+
+	for (int i = 0; i < size; ++i)
+	{
+		if (queueFrame[i].payload == nullptr)
+		{
+			errorFound = true;
+			break;
+		}
+	}
+
+	if (errorFound)
+	{
+		std::cerr << "Non fatal Err: Cant display table due to char* pointing to nullptr\n";
+		return;
+	}
+
 	if (!isEmpty())
 	{
 		//header for the table
