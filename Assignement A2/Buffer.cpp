@@ -53,10 +53,7 @@ namespace Buffer
 	*/
 	void Buffer::initializeBuffer()
 	{
-		for (int i = 0; i < BUFFERSIZE; ++i)
-		{
-			userInput[i] = '~';
-		}
+		memset(userInput, '~', sizeof(userInput));
 	}
 
 	/*
@@ -84,6 +81,17 @@ namespace Buffer
 
 		//process the users inputs
 		std::cin.getline(userInput, BUFFERSIZE);
+
+		int length = strlen(userInput);
+
+		// pad the values
+		for (int i = length; i < BUFFERSIZE - 1; ++i)
+		{
+			userInput[i] = '~';
+		}
+
+		// add back null terminator
+		userInput[BUFFERSIZE - 1] = '\0';
 
 		//check the buffer doesnt overflow
 		if (checkBufferOverflow() == true)

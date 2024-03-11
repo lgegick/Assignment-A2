@@ -24,6 +24,7 @@ int main()
 	// beginning of the UI
 	std::string userOption;
 	std::string prompt;
+	
 
 	while (userOption != "quit" && userOption != "Quit")
 	{
@@ -85,25 +86,25 @@ int main()
 			while (dequeueAgain == 'Y' || dequeueAgain == 'y')
 			{
 				std::cout << CLEAROUTPUT;
-				char* dequeueOutput = new char[7];
-				int status = userQueue.dequeue(dequeueOutput);
-				if (status == -1)
+				char* dequeueOutput = userQueue.dequeue();
+				
+				if (dequeueOutput[0] == '~')
 				{
-					std::cerr << "Non-fatal Err: dequeue did not function as intended, try again\n";
+					std::cout << "No values to dequeue";
 					break;
 				}
-				
+
 				// if the dequeue works as intended, output the value and show the updated table
 				std::cout << "Dequeued value: " << dequeueOutput << "\n\n";
 				userQueue.displayQueue();
+
+				// deallocate the new char made to show output
+				//delete[] dequeueOutput;
 
 				// check if user wants to dequeue again
 				std::cout << "Would you like to Dequeue another value? (Y/N): ";
 				std::cin >> dequeueAgain;
 				std::cout << CLEAROUTPUT;
-
-				// deallocate the new char made to show output
-				delete[] dequeueOutput;
 			}
 		}
 		else if (userOption == "Display" || userOption == "display")
@@ -118,12 +119,43 @@ int main()
 		else if (userOption == "Head" || userOption == "head")
 		{
 			std::cout << CLEAROUTPUT;
-			displayHead(userQueue, BUFFERSIZE);
+			displayHead(userQueue, BUFFERSIZE, userQueue.getFront(), userQueue.getRear());
 			std::cout << "When you are done viewing, enter any value to continue...\n";
 			std::cin.clear(); //clear input stream
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 			getline(std::cin, userOption);
 		}
+		else if (userOption == "Tail" || userOption == "tail")
+		{
+			std::cout << CLEAROUTPUT;
+			displayTail(userQueue, BUFFERSIZE, userQueue.getFront(), userQueue.getRear());
+			std::cout << "When you are done viewing, enter any value to continue...\n";
+			std::cin.clear(); //clear input stream
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			getline(std::cin, userOption);
+		} 
+		else if (userOption == "Size" || userOption == "size")
+		{
+			std::cout << CLEAROUTPUT;
+			std::cout << "The Queue has a size of: " << userQueue.getSize() << '\n';
+			std::cout << "When you are done viewing, enter any value to continue...\n";
+			std::cin.clear(); //clear input stream
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			getline(std::cin, userOption);
+		}
+		else if (userOption == "Empty" || userOption == "empty")
+		{
+			bool status = userQueue.queueStatus();
+			if (status)
+				std::cout << "The queue is empty" << '\n';
+			else
+				std::cout << "The queue is not empty" << '\n';
+			std::cout << "When you are done viewing, enter any value to continue...\n";
+			std::cin.clear(); //clear input stream
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			getline(std::cin, userOption);
+		}
+		
 
 		//once user finishes an above function, or enters function incorrectly
 		std::cout << CLEAROUTPUT;
@@ -131,7 +163,7 @@ int main()
 		std::cin >> userOption;
 		std::cout << CLEAROUTPUT;
 	}
-	
+
 
 	return 0;
 }

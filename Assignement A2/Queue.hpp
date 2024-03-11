@@ -18,6 +18,9 @@ class Queue
 {
 	private:
 
+		// size of the char* array within the Frame
+		const int BUFFERSIZE = 7;
+
 		// index of the front of the queue
 		int front;
 
@@ -43,7 +46,6 @@ class Queue
 		*/
 		~Queue();
 
-
 		/*
 			Enqueue the next value into the Queue
 			@param[in] userInput, char buffer with user input
@@ -53,10 +55,9 @@ class Queue
 
 		/*
 			Dequeue the first most value in the Queue
-			@param[in, out] queueOutput, the output of the dequeue
-			@return int showing status of the dequeue
+			@return char* of the dequeued value
 		*/
-		int dequeue(char* queueOutput);
+		char* dequeue();
 
 		/*
 			Display the contents of the Queue, show each payload beginning at the first most index
@@ -84,20 +85,30 @@ class Queue
 		char* processInput(const char* userInput, int size);
 
 		/*
-			copy the contents from one char* to another char*
-			@param[in] char1, char* is the operand on the left
-			@param[in] char2, char* is the operand on the right
-			@param[in] size, the size of the array (assumed to be six for a Frame)
-		*/
-		void copy(char* char1, char* char2,	const int size);
-
-		/*
 			Check the size is 6 or less
 			@param[in] userinput, char* of the user input into the Queue
 			@return true if the input is within the limit
 		*/
 		bool verifySize(const char* userInput);
 
+		/*
+			return the value of the Queue
+			@return the value of the Queue
+		*/
+		Frame* getFrame();
+
+		/*
+			initialize all the payloads to '~' to check if they are initialized or not
+		*/
+		void implicitInitialization();
+
+		int getFront();
+
+		int getRear();
+
+		int getSize();
+
+		bool queueStatus();
 };
 
 #endif

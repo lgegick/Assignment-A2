@@ -12,6 +12,18 @@
 
 std::string displayUserOptions();
 
-void displayHead(const Queue& userQueue, int size);
+void displayHead(Queue& userQueue, int size, int front, int rear);
+
+void displayTail(Queue& userQueue, int size, int front, int rear);
+
+void showHeadPosition();
+
+void showTailPosition();
+
+void displayWhitespaces(int amount);
+
+size_t addressSize(const Frame& address);
+
+size_t valueSize(const char* address);
 
 #endif

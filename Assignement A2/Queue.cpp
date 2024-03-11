@@ -7,6 +7,7 @@
 #include "Queue.hpp"
 #include <iostream>
 #include <iomanip>
+#include <cstring>
 
 /*
 	Constructor for Queue
@@ -18,6 +19,27 @@ Queue::Queue(int size)
 	rear = -1;
 	front = -1;
 	queueFrame = new Frame[size];
+
+	// do an initialization for each payload
+	for (int i = 0; i < size; ++i)
+	{
+		queueFrame[i].payload = new char[BUFFERSIZE];
+		if (queueFrame[i].payload != nullptr)
+		{
+			memset(queueFrame[i].payload, '~', BUFFERSIZE);
+			for (int j = 0; j < BUFFERSIZE; ++j)
+			{
+				std::cout << queueFrame[i].payload[j];
+			}
+			std::cout << ' ';
+		}
+		else
+		{
+			std::cerr << "Memory allocation fault- Fatal Err\n";
+			exit(-1);
+		}
+	}
+	std::cout << '\n';
 }
 
 /*
@@ -26,7 +48,11 @@ Queue::Queue(int size)
 */
 Queue::~Queue()
 {
-	delete[] queueFrame;
+	for (int i = 0; i < size; ++i)
+	{
+		delete[] queueFrame[i].payload; // Deallocate payload memory
+	}
+	delete[] queueFrame; // Deallocate array memory
 }
 
 /*
@@ -40,22 +66,18 @@ int Queue::enqueue(char* userInput)
 	{
 		return -1; // error code for failure
 	}
-	else if (isEmpty()) // if empty, offset the array
+	else if (isEmpty())
 	{
-		front++;
+		++front;
 	}
 
-	char* enqueueInput = new char[7];
-	copy(enqueueInput, userInput, 7);
-	// pad the userInput if it is not 6 characters
-	processInput(enqueueInput, 7);
+	char* enqueueInput = new char[BUFFERSIZE];
+	strncpy_s(enqueueInput, sizeof(enqueueInput) - 1, userInput, BUFFERSIZE);
 
-	// increase the rear. ensuring it doesnt go above the total size
 	rear = (rear + 1) % size;
-
-	// initialize the payload struct
-	queueFrame[rear].payload = new char[7];
 	queueFrame[rear].payload = enqueueInput;
+	
+	std::cout << "Enqueued the value: " << queueFrame[rear].payload << '\n';
 
 	return 0;
 }
@@ -65,28 +87,27 @@ int Queue::enqueue(char* userInput)
 	@param[in, out] queueOutput, the output of the dequeue
 	@return int showing status of the dequeue
 */
-int Queue::dequeue(char* queueOutput)
+char* Queue::dequeue()
 {
-	
-	if (isEmpty()) //return an error code since no more values to dequeue
+	if (isEmpty())
 	{
-		return -1;
+		char* rtnChar = new char[BUFFERSIZE];
+		rtnChar[0] = '~';
+		return rtnChar;
 	}
+	char* rtnChar = new char[BUFFERSIZE];
+	strncpy_s(rtnChar, sizeof(rtnChar), queueFrame[front].payload, BUFFERSIZE);
 
-	//copy the payload to the queueOutput
-	copy(queueOutput, queueFrame[front].payload, 7);
-
-	if (front == rear) //exactly one element in the array ex. front = rear = 0
+	if (front == rear)
 	{
-		front = -1;
-		rear = -1;
+		front = rear = -1;
 	}
-	else //move front one forward one index
+	else
 	{
 		front = (front + 1) % size;
 	}
 	
-	return 0;
+	return rtnChar;
 }
 
 /*
@@ -96,54 +117,82 @@ void Queue::displayQueue() const
 {
 	if (!isEmpty())
 	{
+		//header for the table
+		std::cout << "The contents of the Queue include:\n\n";
+		std::cout << "___________________________________________\n";
+
+		//show the table legend with regard to the index and its payload
+		std::cout << "    " << "Index" << std::setw(12) << std::setfill(' ') << '|' <<
+			std::setw(16) << std::setfill(' ') << "Payload" << '\n';
+		std::cout << "___________________________________________\n";
+
 		if (rear >= front)
 		{
-			//header for the table
-			std::cout << "The contents of the Queue include:\n\n";
-			std::cout << "___________________________________________\n";
-
-			//show the table legend with regard to the index and its payload
-			std::cout << "    " << "Index" << std::setw(12) << std::setfill(' ') << '|' <<
-				std::setw(16) << std::setfill(' ') << "Payload" << '\n';
-			std::cout << "___________________________________________\n";
-
-			for (int i = front; i <= rear; ++i)
+			for (int i = front; i < size; ++i)
 			{
-				std::cout << "      " << i << std::setw(14) << std::setfill(' ') << '|' <<
-					std::setw(13) << std::setfill(' ') << queueFrame[i].payload << '\n';
+				if (queueFrame[i].payload[0] != '~')
+				{
+					std::cout << "      " << i << std::setw(14) << std::setfill(' ') << '|' <<
+					std::setw(13) << std::setfill(' '); 
+
+					for (int j = 0; j < BUFFERSIZE; ++j)
+					{
+						if (queueFrame[i].payload[j] != '~')
+							std::cout << queueFrame[i].payload[j];
+					}
+					std::cout << '\n';
+				}
 			}
-			std::cout << '\n';
 		}
 		else
 		{
-			//header for the table
-			std::cout << "The contents of the Queue include:\n\n";
-			std::cout << "___________________________________________\n";
-
-			//show the table legend with regard to the index and its payload
-			std::cout << "    " << "Index" << std::setw(12) << std::setfill(' ') << '|' <<
-				std::setw(16) << std::setfill(' ') << "Payload" << '\n';
-			std::cout << "___________________________________________\n";
-
 			for (int i = front; i < size; ++i)
 			{
-				std::cout << "      " << i << std::setw(14) << std::setfill(' ') << '|' <<
-					std::setw(13) << std::setfill(' ') << queueFrame[i].payload << '\n';
+				if (queueFrame[i].payload[0] != '~')
+				{
+					std::cout << "      " << i << std::setw(14) << std::setfill(' ') << '|' <<
+					std::setw(13) << std::setfill(' ');
+
+					for (int j = 0; j < BUFFERSIZE; ++j)
+					{
+						if (queueFrame[i].payload[j] != '~')
+							std::cout << queueFrame[i].payload[j];
+					}
+					std::cout << '\n';
+				}
+
 			}
 
 			for (int i = 0; i <= rear; ++i)
 			{
-				std::cout << "      " << i << std::setw(14) << std::setfill(' ') << '|' <<
-					std::setw(13) << std::setfill(' ') << queueFrame[i].payload << '\n';
-			}
+				if (queueFrame[i].payload[0] != '~')
+				{
+					std::cout << "      " << i << std::setw(14) << std::setfill(' ') << '|' <<
+					std::setw(13) << std::setfill(' ');
 
-			std::cout << '\n';
+					for (int j = 0; j < BUFFERSIZE; ++j)
+					{
+						if (queueFrame[i].payload[j] != '~')
+							std::cout << queueFrame[i].payload[j];
+					}
+					std::cout << '\n';
+				}
+			}
 		}
+		
+		std::cout << '\n';
 	}
 	else
 	{
-		std::cout << "The queue is currently empty...\n";
-	}
+		//header for the table
+		std::cout << "The contents of the Queue include:\n\n";
+		std::cout << "___________________________________________\n";
+
+		//show the table legend with regard to the index and its payload
+		std::cout << "    " << "Index" << std::setw(12) << std::setfill(' ') << '|' <<
+			std::setw(16) << std::setfill(' ') << "Payload" << '\n';
+		std::cout << "___________________________________________\n";
+	} 
 }
 
 /*
@@ -152,10 +201,7 @@ void Queue::displayQueue() const
 */
 bool Queue::isEmpty() const
 {
-	if (front == -1) //front is set to -1 meaning no values
-		return true;
-	else
-		return false;
+	return front == -1;
 }
 
 /*
@@ -164,10 +210,7 @@ bool Queue::isEmpty() const
 */
 bool Queue::isFull() const
 {
-	if ((rear + 1) % size == front) //queue has fully wrapped around the circle
-		return true;
-	else
-		return false;
+	return (rear + 1) % size == front;
 }
 
 /*
@@ -195,18 +238,6 @@ char* Queue::processInput(const char* userInput, int size)
 }
 
 /*
-	copy the contents from one char* to another char*
-	@param[in, out] char1, char* is the operand on the left
-	@param[in, out] char2, char* is the operand on the right'
-	@param[in] size, the size of the array (assumed to be six for a Frame)
-*/
-void Queue::copy(char* char1, char* char2, const int size)
-{
-	for (int i = 0; i < size; ++i)
-		char1[i] = char2[i];
-}
-
-/*
 	Check the size is 6 or less
 	@param[in] userinput, char* of the user input into the Queue
 	@return true if the input is within the limit
@@ -220,4 +251,48 @@ bool Queue::verifySize(const char* userInput)
 			++size;
 	}
 	return size < 7;
+}
+
+/*
+	return the value of the Queue
+	@return the value of the Queue
+*/
+Frame* Queue::getFrame()
+{
+	return queueFrame;
+}
+
+/*
+	initialize all the payloads to '~' to check if they are initialized or not
+*/
+void Queue::implicitInitialization()
+{
+	for (int i = 0; i < size; ++i)
+	{
+		queueFrame[i].payload = new char[size];
+		queueFrame[i].payload[0] = '~';
+	}
+}
+
+int Queue::getFront()
+{
+	return front;
+}
+
+int Queue::getRear()
+{
+	return rear;
+}
+
+int Queue::getSize()
+{
+	return size;
+}
+
+bool Queue::queueStatus()
+{
+	if (isEmpty())
+		return true;
+	else
+		return false;
 }

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <iomanip>
 #include <limits>
+#include <cstring>
 
 const std::string CLEAROUTPUT = "\033[2J\033[1; 1H";
 
@@ -35,13 +36,332 @@ std::string displayUserOptions()
 	return userOption;
 }
 
-void displayHead(const Queue& userQueue, int size)
+void displayHead(Queue& userQueue, int size, int front, int rear)
 {
-	//show the labels of the graph
-	std::cout << setw(10) << setfill(' ') << "Address" << setw(10) << setfill(' ') << '\n';
+	//NOTE:
+	// there are 24 whitespaces in the address box
+	// and 22 spaces in the value box
 
-	std::cout << setw(35) << setfill('_') << '\n';
-	std::cout << "|" << setw(10) << setfill(' ') << "|" << setw(10) << setfill(' ') << "|";
-	
+	// get the address of the Queue
+	const Frame* queueFrame = new Frame[size];
+	queueFrame = userQueue.getFrame();
+
+	// declare the variable used to find the head node by index
+	int headIndex;
+	bool framesExist;
+
+	// find if a head exists
+	for (int i = 0; i < size; ++i)
+	{
+		if (queueFrame[i].payload == nullptr)
+		{
+			framesExist = false;
+		}
+		else
+		{
+			framesExist = true;
+			break;
+		}
+	}
+
+	// check if any Frames were initilized
+	if (framesExist == false)
+	{
+		headIndex = -1;
+		std::cout << "No head node exists\n";
+		return;
+	}
+
+	// keeps track if a head node has been displayed
+	int headCount(-1);
+	bool isHeadNode = false;
+
+	// get values of front to show when to start reading payloads
+	char* frontPayload = queueFrame[front].payload;
+	char* rearPayload = queueFrame[rear].payload;
+	bool frontFound = false;
+	bool atRear = false;
+
+	//show the labels of the graph
+	std::cout << setw(16) << setfill(' ') << "Address" << setw(23) << setfill(' ') << "Value" << '\n';
+	std::cout << setw(50) << setfill('_') << '\n';
+
+	// display the table
+	for (int i = 0; i < size; ++i)
+	{
+		char* tempPayload = queueFrame[i].payload;
+		char* tempRear = queueFrame[i].payload;
+
+		if (tempPayload == frontPayload)
+		{
+			frontFound = true;
+		}
+		if (tempRear == rearPayload)
+		{
+			atRear = true;
+		}
+		if (front == rear)
+		{
+			frontFound = atRear = true;
+		}
+
+		if (tempPayload != nullptr)
+		{
+			if (frontFound && !atRear)
+			{
+				// check to see if the value of the Frame exists and is initialized
+				if (queueFrame[i].payload[0] != '~')
+				{
+					// if this is the first instance of a Frame, it must be the head node
+					if (headCount == -1)
+					{
+						isHeadNode = true;
+						headCount++;
+					}
+					else
+					{
+						isHeadNode = false;
+					}
+
+					int leftValueSpace = 10;
+					int rightValueSpace = 12 - valueSize(queueFrame[i].payload);
+
+					// display table and its contents
+					std::cout << "|";
+					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
+					std::cout << &queueFrame[i].payload;
+					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
+					std::cout << "|";
+					displayWhitespaces(leftValueSpace);
+					std::cout << queueFrame[i].payload;
+					displayWhitespaces(rightValueSpace);
+					std::cout << "|";
+				}
+			}
+			else if (frontFound && atRear) //point to the same value
+			{
+				// check to see if the value of the Frame exists and is initialized
+				if (queueFrame[i].payload[0] != '~')
+				{
+					// if this is the first instance of a Frame, it must be the head node
+					if (headCount == -1)
+					{
+						isHeadNode = true;
+						headCount++;
+					}
+					else
+					{
+						isHeadNode = false;
+					}
+
+					int leftValueSpace = 10;
+					int rightValueSpace = 12 - valueSize(queueFrame[i].payload);
+
+					// display table and its contents
+					std::cout << "|";
+					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
+					std::cout << &queueFrame[i].payload;
+					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
+					std::cout << "|";
+					displayWhitespaces(leftValueSpace);
+					std::cout << queueFrame[i].payload;
+					displayWhitespaces(rightValueSpace);
+					std::cout << "|";
+
+					// reset the bool values
+					frontFound = false;
+					atRear = false;
+				}
+			}
+			else // display an empty table
+			{
+				std::cout << "|";
+				displayWhitespaces(24);
+				std::cout << "|";
+				displayWhitespaces(22);
+				std::cout << "|";
+			}
+		}
+
+		//check if the value is of the head node
+		if (isHeadNode)
+		{
+			showHeadPosition();
+		}
+		std::cout << '\n';
+		std::cout << setw(50) << setfill('-') << '\n';
+	}
+
+	std::cout << '\n';
+	delete[] queueFrame;
 }
 
+void showHeadPosition()
+{
+	std::cout << "<------ HEAD";
+}
+
+void displayWhitespaces(int amount)
+{
+	for (int i = 0; i < amount; ++i)
+	{
+		std::cout << ' ';
+	}
+}
+
+size_t addressSize(const Frame& address)
+{
+	size_t charSize = sizeof(address);
+	size_t numberCharacters = charSize * 2;
+	return numberCharacters;
+}
+
+size_t valueSize(const char* address)
+{
+	size_t count = strlen(address);
+	return count;
+}
+
+void displayTail(Queue& userQueue, int size, int front, int rear)
+{
+
+	//NOTE:
+	// there are 24 whitespaces in the address box
+	// and 22 spaces in the value box
+
+	// get the address of the Queue
+	const Frame* queueFrame = new Frame[size];
+	queueFrame = userQueue.getFrame();
+
+	// declare the variables to help find the rear node
+	int tailIndex;
+	bool framesExist;
+
+	// find the count of nodes and if any payloads exist
+	for (int i = 0; i < size; ++i)
+	{
+		if (queueFrame[i].payload == nullptr)
+		{
+			framesExist = false;
+		}
+		else
+		{
+			framesExist = true;
+			break;
+		}
+	}
+
+	// check if any Frames were initilized
+	if (framesExist == false)
+	{
+		tailIndex = -1;
+		std::cout << "No tail node exists\n";
+		return;
+	}
+
+	// keeps track if a tail node
+	bool isTailNode = false;
+
+	// get values of front to show when to start reading payloads
+	char* rearPayload = queueFrame[rear].payload;
+	char* frontPayload = queueFrame[front].payload;
+	bool rearFound = false;
+	bool frontFound = true;
+
+	//show the labels of the graph
+	std::cout << setw(16) << setfill(' ') << "Address" << setw(23) << setfill(' ') << "Value" << '\n';
+	std::cout << setw(50) << setfill('_') << '\n';
+
+	// display the table
+	for (int i = 0; i < size; ++i)
+	{
+		char* tempPayload = queueFrame[i].payload;
+		char* tempRear = queueFrame[i].payload;
+
+		if (tempPayload == frontPayload)
+		{
+			frontFound = true;
+		}
+		else if (tempRear == rearPayload)
+		{
+			rearFound = true;
+		}
+		else if (front == rear)
+		{
+			frontFound = rearFound = true;
+		}
+		else
+		{
+			rearFound = false;
+		}
+
+		if (queueFrame[i].payload != nullptr)
+		{
+			if (frontFound && !rearFound) // if the front and rear are at different positions
+			{
+				if (queueFrame[i].payload[0] != '~')
+				{
+					int leftValueSpace = 10;
+					int rightValueSpace = 12 - valueSize(queueFrame[i].payload);
+
+					// display table and its contents
+					std::cout << "|";
+					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
+					std::cout << &queueFrame[i].payload;
+					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
+					std::cout << "|";
+					displayWhitespaces(leftValueSpace);
+					std::cout << queueFrame[i].payload;
+					displayWhitespaces(rightValueSpace);
+					std::cout << "|";
+				}
+			}
+			else if (frontFound && rearFound)
+			{
+				if (queueFrame[i].payload[0] != '~')
+				{
+					int leftValueSpace = 10;
+					int rightValueSpace = 12 - valueSize(queueFrame[i].payload);
+
+					// display table and its contents
+					std::cout << "|";
+					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
+					std::cout << &queueFrame[i].payload;
+					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
+					std::cout << "|";
+					displayWhitespaces(leftValueSpace);
+					std::cout << queueFrame[i].payload;
+					displayWhitespaces(rightValueSpace);
+					std::cout << "|";
+				}
+			}
+			else
+			{
+				std::cout << "|";
+				displayWhitespaces(24);
+				std::cout << "|";
+				displayWhitespaces(22);
+				std::cout << "|";
+			}
+		}
+
+		//check if the value is of the head node
+		if (rearFound)
+		{
+			showTailPosition();
+		}
+		std::cout << '\n';
+		std::cout << setw(50) << setfill('-') << '\n';
+	}
+
+	std::cout << '\n';
+	std::cout << setw(50) << setfill('-') << '\n';
+
+	std::cout << '\n';
+	delete[] queueFrame;
+}
+
+void showTailPosition()
+{
+	std::cout << "<------ TAIL";
+}
