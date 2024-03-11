@@ -12,6 +12,7 @@
 struct Frame
 {
 	char* payload;
+	int destination;
 };
 
 class Queue
@@ -32,6 +33,8 @@ class Queue
 
 		// points to the front most Frame
 		Frame* queueFrame;
+
+		void resize();
 
 	public:
 		/*
@@ -57,7 +60,7 @@ class Queue
 			Dequeue the first most value in the Queue
 			@return char* of the dequeued value
 		*/
-		char* dequeue();
+		int dequeue(char* userOutput);
 
 		/*
 			Display the contents of the Queue, show each payload beginning at the first most index
@@ -109,6 +112,10 @@ class Queue
 		int getSize();
 
 		bool queueStatus();
+
+		void setDestination(int dest);
+
+		int getDestination();
 };
 
 #endif

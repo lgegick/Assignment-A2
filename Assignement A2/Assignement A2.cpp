@@ -73,6 +73,15 @@ int main()
 					std::cerr << "Non-fatal Err: Invalid user input\n";
 					break;
 				}
+				
+				// get the destination 
+				/*
+				int tempDest;
+				std::cout << "Enter the destination (0-99): ";
+				std::cin >> tempDest;
+				userQueue.setDestination(tempDest); */
+
+				//display the Queue contents
 				userQueue.displayQueue();
 
 				std::cout << "Would you like to Enqueue another value? (Y/N): ";
@@ -86,20 +95,19 @@ int main()
 			while (dequeueAgain == 'Y' || dequeueAgain == 'y')
 			{
 				std::cout << CLEAROUTPUT;
-				char* dequeueOutput = userQueue.dequeue();
-				
-				if (dequeueOutput[0] == '~')
-				{
-					std::cout << "No values to dequeue";
+				char* dequeueOutput = new char[BUFFERSIZE];
+				int status = userQueue.dequeue(dequeueOutput);
+
+				if (status == -1)
 					break;
-				}
 
 				// if the dequeue works as intended, output the value and show the updated table
-				std::cout << "Dequeued value: " << dequeueOutput << "\n\n";
+				std::cout << dequeueOutput;
+				std::cout << "\n\n";
 				userQueue.displayQueue();
 
 				// deallocate the new char made to show output
-				//delete[] dequeueOutput;
+				delete[] dequeueOutput;
 
 				// check if user wants to dequeue again
 				std::cout << "Would you like to Dequeue another value? (Y/N): ";

@@ -9,7 +9,9 @@
 #include <iomanip>
 #include <limits>
 #include <cstring>
+#include <cmath>
 
+const int BUFFERSIZE = 7;
 const std::string CLEAROUTPUT = "\033[2J\033[1; 1H";
 
 using std::cout;
@@ -109,69 +111,85 @@ void displayHead(Queue& userQueue, int size, int front, int rear)
 		{
 			if (frontFound && !atRear)
 			{
-				// check to see if the value of the Frame exists and is initialized
-				if (queueFrame[i].payload[0] != '~')
+				// if this is the first instance of a Frame, it must be the head node
+				if (headCount == -1)
 				{
-					// if this is the first instance of a Frame, it must be the head node
-					if (headCount == -1)
+					isHeadNode = true;
+					headCount++;
+				}
+				else
+				{
+					isHeadNode = false;
+				}
+
+				int leftValueSpace = 10;
+				int rightValueSpace = 12 - valueSize(queueFrame[i].payload);
+				int addressSpace = (24 - addressSize(queueFrame[i])) / 2;
+				addressSpace = (abs(addressSpace));
+
+				// display table and its contents
+				std::cout << "|";
+				displayWhitespaces(addressSpace);
+				std::cout << &queueFrame[i].payload;
+				displayWhitespaces(addressSpace);
+				std::cout << "|";
+				displayWhitespaces(leftValueSpace);
+				for (int j = 0; j < BUFFERSIZE; ++j)
+				{
+					if (queueFrame[i].payload[j] != '~')
 					{
-						isHeadNode = true;
-						headCount++;
+						std::cout << queueFrame[i].payload[j];
 					}
 					else
 					{
-						isHeadNode = false;
+						std::cout << ' ';
 					}
-
-					int leftValueSpace = 10;
-					int rightValueSpace = 12 - valueSize(queueFrame[i].payload);
-
-					// display table and its contents
-					std::cout << "|";
-					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
-					std::cout << &queueFrame[i].payload;
-					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
-					std::cout << "|";
-					displayWhitespaces(leftValueSpace);
-					std::cout << queueFrame[i].payload;
-					displayWhitespaces(rightValueSpace);
-					std::cout << "|";
 				}
+				displayWhitespaces(rightValueSpace);
+				std::cout << "|";
 			}
 			else if (frontFound && atRear) //point to the same value
 			{
-				// check to see if the value of the Frame exists and is initialized
-				if (queueFrame[i].payload[0] != '~')
+				// if this is the first instance of a Frame, it must be the head node
+				if (headCount == -1)
 				{
-					// if this is the first instance of a Frame, it must be the head node
-					if (headCount == -1)
+					isHeadNode = true;
+					headCount++;
+				}
+				else
+				{
+					isHeadNode = false;
+				}
+
+				int leftValueSpace = 10;
+				int rightValueSpace = 12 - valueSize(queueFrame[i].payload);
+				int addressSpace = (24 - addressSize(queueFrame[i])) / 2;
+				addressSpace = (abs(addressSpace));
+
+				// display table and its contents
+				std::cout << "|";
+				displayWhitespaces(addressSpace);
+				std::cout << &queueFrame[i].payload;
+				displayWhitespaces(addressSpace);
+				std::cout << "|";
+				displayWhitespaces(leftValueSpace);
+				for (int j = 0; j < BUFFERSIZE; ++j)
+				{
+					if (queueFrame[i].payload[j] != '~')
 					{
-						isHeadNode = true;
-						headCount++;
+						std::cout << queueFrame[i].payload[j];
 					}
 					else
 					{
-						isHeadNode = false;
+						std::cout << ' ';
 					}
-
-					int leftValueSpace = 10;
-					int rightValueSpace = 12 - valueSize(queueFrame[i].payload);
-
-					// display table and its contents
-					std::cout << "|";
-					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
-					std::cout << &queueFrame[i].payload;
-					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
-					std::cout << "|";
-					displayWhitespaces(leftValueSpace);
-					std::cout << queueFrame[i].payload;
-					displayWhitespaces(rightValueSpace);
-					std::cout << "|";
-
-					// reset the bool values
-					frontFound = false;
-					atRear = false;
 				}
+				displayWhitespaces(rightValueSpace);
+				std::cout << "|";
+
+				// reset the bool values
+				frontFound = false;
+				atRear = false;
 			}
 			else // display an empty table
 			{
@@ -209,16 +227,20 @@ void displayWhitespaces(int amount)
 	}
 }
 
-size_t addressSize(const Frame& address)
+int addressSize(const Frame& address)
 {
-	size_t charSize = sizeof(address);
-	size_t numberCharacters = charSize * 2;
+	int charSize = sizeof(address);
+	int numberCharacters = charSize * 2;
 	return numberCharacters;
 }
 
-size_t valueSize(const char* address)
+int valueSize(const char* address)
 {
-	size_t count = strlen(address);
+	int count = 0;
+	if (address != nullptr)
+	{
+		count = strlen(address);
+	}
 	return count;
 }
 
@@ -299,41 +321,61 @@ void displayTail(Queue& userQueue, int size, int front, int rear)
 		{
 			if (frontFound && !rearFound) // if the front and rear are at different positions
 			{
-				if (queueFrame[i].payload[0] != '~')
-				{
-					int leftValueSpace = 10;
-					int rightValueSpace = 12 - valueSize(queueFrame[i].payload);
+				int leftValueSpace = 10;
+				int rightValueSpace = 12 - valueSize(queueFrame[i].payload);
+				int addressSpace = (24 - addressSize(queueFrame[i])) / 2;
+				addressSpace = (abs(addressSpace));
 
-					// display table and its contents
-					std::cout << "|";
-					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
-					std::cout << &queueFrame[i].payload;
-					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
-					std::cout << "|";
-					displayWhitespaces(leftValueSpace);
-					std::cout << queueFrame[i].payload;
-					displayWhitespaces(rightValueSpace);
-					std::cout << "|";
+				// display table and its contents
+				std::cout << "|";
+				displayWhitespaces(addressSpace);
+				std::cout << &queueFrame[i].payload;
+				displayWhitespaces(addressSpace);
+				std::cout << "|";
+				displayWhitespaces(leftValueSpace);
+				std::cout << queueFrame[i].payload;
+				for (int j = 0; j < BUFFERSIZE; ++j)
+				{
+					if (queueFrame[i].payload[j] != '~')
+					{
+						std::cout << queueFrame[i].payload[j];
+					}
+					else
+					{
+						std::cout << ' ';
+					}
 				}
+				displayWhitespaces(rightValueSpace);
+				std::cout << "|";
 			}
 			else if (frontFound && rearFound)
 			{
-				if (queueFrame[i].payload[0] != '~')
-				{
-					int leftValueSpace = 10;
-					int rightValueSpace = 12 - valueSize(queueFrame[i].payload);
+				int leftValueSpace = 10;
+				int rightValueSpace = 12 - valueSize(queueFrame[i].payload);
+				int addressSpace = (24 - addressSize(queueFrame[i])) / 2;
+				addressSpace = (abs(addressSpace));
 
-					// display table and its contents
-					std::cout << "|";
-					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
-					std::cout << &queueFrame[i].payload;
-					displayWhitespaces((24 - addressSize(queueFrame[i])) / 2);
-					std::cout << "|";
-					displayWhitespaces(leftValueSpace);
-					std::cout << queueFrame[i].payload;
-					displayWhitespaces(rightValueSpace);
-					std::cout << "|";
+				// display table and its contents
+				std::cout << "|";
+				displayWhitespaces(addressSpace);
+				std::cout << &queueFrame[i].payload;
+				displayWhitespaces(addressSpace);
+				std::cout << "|";
+				displayWhitespaces(leftValueSpace);
+				for (int j = 0; j < BUFFERSIZE; ++j)
+				{
+					if (queueFrame[i].payload[j] != '~')
+					{
+						std::cout << queueFrame[i].payload[j];
+					}
+					else
+					{
+						std::cout << ' ';
+					}
 				}
+				displayWhitespaces(rightValueSpace);
+				std::cout << "|";
+				
 			}
 			else
 			{
@@ -358,7 +400,6 @@ void displayTail(Queue& userQueue, int size, int front, int rear)
 	std::cout << setw(50) << setfill('-') << '\n';
 
 	std::cout << '\n';
-	delete[] queueFrame;
 }
 
 void showTailPosition()

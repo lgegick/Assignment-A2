@@ -22,8 +22,8 @@ void showTailPosition();
 
 void displayWhitespaces(int amount);
 
-size_t addressSize(const Frame& address);
+int addressSize(const Frame& address);
 
-size_t valueSize(const char* address);
+int valueSize(const char* address);
 
 #endif

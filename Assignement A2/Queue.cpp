@@ -27,11 +27,6 @@ Queue::Queue(int size)
 		if (queueFrame[i].payload != nullptr)
 		{
 			memset(queueFrame[i].payload, '~', BUFFERSIZE);
-			for (int j = 0; j < BUFFERSIZE; ++j)
-			{
-				std::cout << queueFrame[i].payload[j];
-			}
-			std::cout << ' ';
 		}
 		else
 		{
@@ -39,7 +34,6 @@ Queue::Queue(int size)
 			exit(-1);
 		}
 	}
-	std::cout << '\n';
 }
 
 /*
@@ -55,6 +49,38 @@ Queue::~Queue()
 	delete[] queueFrame; // Deallocate array memory
 }
 
+void Queue::resize()
+{
+	Frame* tempFrame = new Frame[size * 2];
+
+	// do an initialization for each payload
+	for (int i = 0; i < size; ++i)
+	{
+		tempFrame[i].payload = new char[BUFFERSIZE];
+		if (tempFrame[i].payload != nullptr)
+		{
+			memset(tempFrame[i].payload, '~', BUFFERSIZE);
+		}
+		else
+		{
+			std::cerr << "Memory allocation fault- Fatal Err\n";
+			exit(-1);
+		}
+	}
+
+	int i(0), j(front);
+
+	do
+	{
+		tempFrame[i++] = queueFrame[j];
+		j = (j + 1) % size;
+	} while (j != front);
+
+	front = 0;
+	rear = size - 1;
+	queueFrame = tempFrame;
+}
+
 /*
 	Enqueue the next value into the Queue
 	@param[in] userInput, char buffer with user input
@@ -64,6 +90,7 @@ int Queue::enqueue(char* userInput)
 {
 	if (isFull())
 	{
+		resize();
 		return -1; // error code for failure
 	}
 	else if (isEmpty())
@@ -72,7 +99,7 @@ int Queue::enqueue(char* userInput)
 	}
 
 	char* enqueueInput = new char[BUFFERSIZE];
-	strncpy_s(enqueueInput, sizeof(enqueueInput) - 1, userInput, BUFFERSIZE);
+	strncpy_s(enqueueInput, BUFFERSIZE, userInput, BUFFERSIZE);
 
 	rear = (rear + 1) % size;
 	queueFrame[rear].payload = enqueueInput;
@@ -84,20 +111,20 @@ int Queue::enqueue(char* userInput)
 
 /*
 	Dequeue the first most value in the Queue
-	@param[in, out] queueOutput, the output of the dequeue
+	@param[out] queueOutput, the output of the dequeue
 	@return int showing status of the dequeue
 */
-char* Queue::dequeue()
+int Queue::dequeue(char* userOutput)
 {
 	if (isEmpty())
 	{
-		char* rtnChar = new char[BUFFERSIZE];
-		rtnChar[0] = '~';
-		return rtnChar;
+		userOutput = nullptr;
+		return -1;
 	}
-	char* rtnChar = new char[BUFFERSIZE];
-	strncpy_s(rtnChar, sizeof(rtnChar), queueFrame[front].payload, BUFFERSIZE);
 
+	strncpy_s(userOutput, BUFFERSIZE, queueFrame[front].payload, BUFFERSIZE);
+
+	// test to see if the front and rear point to the same node
 	if (front == rear)
 	{
 		front = rear = -1;
@@ -106,8 +133,8 @@ char* Queue::dequeue()
 	{
 		front = (front + 1) % size;
 	}
-	
-	return rtnChar;
+
+	return 0;
 }
 
 /*
@@ -295,4 +322,14 @@ bool Queue::queueStatus()
 		return true;
 	else
 		return false;
+}
+
+void Queue::setDestination(int dest)
+{
+	queueFrame[0].destination = dest;
+}
+
+int Queue::getDestination()
+{
+	return queueFrame[0].destination;
 }
