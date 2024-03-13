@@ -10,9 +10,10 @@
 #include <limits>
 #include <cstring>
 #include <cmath>
+#include <string_view>
 
 const int BUFFERSIZE = 7;
-const std::string CLEAROUTPUT = "\033[2J\033[1; 1H";
+constexpr std::string_view CLEAROUTPUT = "\033[2J\033[1; 1H";
 
 using std::cout;
 using std::setw;

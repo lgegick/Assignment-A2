@@ -75,11 +75,10 @@ int main()
 				}
 				
 				// get the destination 
-				/*
 				int tempDest;
 				std::cout << "Enter the destination (0-99): ";
 				std::cin >> tempDest;
-				userQueue.setDestination(tempDest); */
+				userQueue.setDestination(tempDest); 
 
 				//display the Queue contents
 				userQueue.displayQueue();
@@ -164,14 +163,12 @@ int main()
 			getline(std::cin, userOption);
 		}
 		
-
 		//once user finishes an above function, or enters function incorrectly
 		std::cout << CLEAROUTPUT;
 		std::cout << "Enter 'quit' to exit program, and 'enter' to continue: ";
 		std::cin >> userOption;
 		std::cout << CLEAROUTPUT;
 	}
-
 
 	return 0;
 }
