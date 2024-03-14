@@ -42,10 +42,6 @@ Queue::Queue(int size)
 */
 Queue::~Queue()
 {
-	for (int i = 0; i < size; ++i)
-	{
-		delete[] queueFrame[i].payload; // Deallocate payload memory
-	}
 	delete[] queueFrame; // Deallocate array memory
 }
 
